@@ -1,0 +1,17 @@
+{
+  "installation": {
+    "version": "20.4.6"
+  },
+  "projects": {
+    "frontend": {
+      "root": "apps/frontend",
+      "sourceRoot": "apps/frontend/src",
+      "projectType": "application"
+    },
+    "backend": {
+      "root": "apps/backend",
+      "sourceRoot": "apps/backend/src",
+      "projectType": "application"
+    }
+  }
+}
