@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from "../context/AuthContext";
 import axios from 'axios';
 import MyItemCard from '../components/MyItemCard'
+import { useSelector } from "react-redux";
 
 function MyPost() {
-    const { userId } = useAuth();
+    const userId = useSelector((state) => state.auth.userId);
+
     const [mypost, setMypost] = useState([]);
 
     useEffect(() => {

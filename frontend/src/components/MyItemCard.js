@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
@@ -6,15 +6,15 @@ import DOMPurify from "dompurify";
 import { MdFavorite } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
 import axios from 'axios'
-import { useAuth } from "../context/AuthContext";
+import { useSelector } from "react-redux";
+// import { useAuth } from "../context/AuthContext";
 
 
-function ItemCard({ post }) {
-    const { userId } = useAuth();
-
+function MyItemCard({ post }) {
+    // const { userId } = useAuth();
+    const userId = useSelector((state) => state.auth.userId);
     const [show, setShow] = useState(false);
     const [icon, setIcon] = useState("");
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -29,6 +29,16 @@ function ItemCard({ post }) {
         }
         handleClose();
     }
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/posts/${post._id}`);
+            console.log("Deleted:", response.data);
+            alert("Post deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting post:", error.response?.data || error.message);
+        }
+    };
+
 
     return (
         <>
@@ -39,18 +49,21 @@ function ItemCard({ post }) {
                 <Card.Img className='m-auto' variant="top" src={post.image} style={{ width: "200px" }} />
                 <Modal.Body>
                     <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body) }} />
-                    <div>
-                        <p><b>post At:</b> <i>{post.createdAt.slice(0, 10)}</i></p>
-                        <p><b>post By:</b> <i>{post.user_id.name}</i></p>
+                    <div className="d-flex justify-content-between">
+                        <div>
+                            <p><b>post At:</b> <i>{post.createdAt.slice(0, 10)}</i></p>
+                            <p><b>post By:</b> <i>{post.user_id.name}</i></p>
+                        </div>
+                        <div className='d-flex align-items-center'>
+                            <Button className='text-dark btn-light' onClick={handleFavorite}>
+                                {
+                                    icon === "Item added to favorites" ? <MdFavorite /> : <MdFavoriteBorder />
+                                }
+                            </Button>
+                        </div>
                     </div>
-                    <Button className='text-light btn-dark mt-2'
-                        onClick={() => { handleFavorite() }}>
-                        <MdFavorite />
-                        <MdFavoriteBorder />
-                    </Button>
                 </Modal.Body>
             </Modal>
-
 
 
             <Card style={{ width: '18rem' }} className='my-4'>
@@ -70,14 +83,16 @@ function ItemCard({ post }) {
                             icon === "Item added to favorites" ? <MdFavorite /> : <MdFavoriteBorder />
                         }
                     </Button>
+                    <Button className='text-dark btn-light float-end' onClick={handleDelete}>
+                        delete
+                    </Button>
                 </Card.Body>
             </Card>
-
         </>
     )
 }
 
-export default ItemCard
+export default MyItemCard
 
 
 

@@ -2,23 +2,26 @@ import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/slices/authSlice";
 
 function Signup() {
-    const { setUserId } = useAuth();
+
     const navigate = useNavigate();
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-
+    const dispatch = useDispatch();
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.
             post("http://localhost:8080/api/register", { "name": name, "email": email, 'password': password })
             .then((user) => {
                 console.log(user.data.user_id)
-                setUserId(user.data.user_id);
+                // setUserId(user.data.user_id);
+                dispatch(login(user.data.user_id));
+
             }
             )
             .catch(() => { console.log("not create something wrong") })

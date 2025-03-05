@@ -3,12 +3,14 @@ import { NavLink } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import { FaSignInAlt } from "react-icons/fa";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { MdFavorite } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
+import { useSelector } from "react-redux";
+
 
 function Profile() {
-    const { userId } = useAuth();
+    const userId = useSelector((state) => state.auth.userId);
+
 
     return (
         <>

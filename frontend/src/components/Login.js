@@ -1,22 +1,53 @@
+// import React, { useState } from "react";
+// import { Form, Button, Container, Row, Col } from "react-bootstrap";
+// import { Link, useNavigate } from "react-router-dom";
+// import axios from 'axios'
+// import { useAuth } from "../context/AuthContext";
+// import { useSelector, useDispatch } from "react-redux";
+// import { logout } from "../redux/slices/authSlice";
+// function Login() {
+
+//   const [email, setEmail] = useState("")
+//   const [password, setPassword] = useState("")
+//   const navigate = useNavigate();
+//   const { setUserId } = useAuth();
+
+
+//   const userId = useSelector((state) => state.auth.userId);
+//   const dispatch = useDispatch();
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     axios.post("http://localhost:8080/api/login", { email, password })
+//       .then((response) => {
+//         console.log(response.data.user_id);
+//         setUserId(response.data.user_id);
+//         navigate("/");
+//       })
+//       .catch((err) => {
+//         console.log("Login failed", err);
+//       });
+//   };
+
+
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios'
-import { useAuth } from "../context/AuthContext";
+import axios from 'axios';
+import { useDispatch } from "react-redux";
+import { login } from "../redux/slices/authSlice";  
 
 function Login() {
-
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setUserId } = useAuth();
+  const dispatch = useDispatch(); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post("http://localhost:8080/api/login", { email, password })
       .then((response) => {
-        console.log(response.data.user_id);
-        setUserId(response.data.user_id);
+        dispatch(login(response.data.user_id)); 
         navigate("/");
       })
       .catch((err) => {

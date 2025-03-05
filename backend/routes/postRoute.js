@@ -1,7 +1,53 @@
+// const express = require("express");
+// const router = express.Router();
+
+// const
+//     {   createPost,
+//         getAllPost,
+//         searchPost,
+//         deletePost,
+//         getPostById
+//     } = require("../controllers/postController")
+
+
+
+// const upload = multer({ storage });
+
+// // create new post
+// router.post("/", createPost);
+
+
+// // get all Items
+// router.get("/", getAllPost)
+
+// // search api
+// router.get("/search", searchPost);
+
+
+// // delete
+// router.delete("/:itemId", deletePost);
+
+
+// // get post by id
+// router.get("/:id", getPostById);
+
+
+
+
+// module.exports = router
+
+
 const express = require("express");
-const postModel = require("../models/postModel")
-const multer = require('multer')
+const multer = require("multer");
 const router = express.Router();
+const {
+    createPost,
+    getAllPost,
+    searchPost,
+    deletePost,
+    getPostById
+} = require("../controllers/postController");
+
 
 
 const storage = multer.diskStorage({
@@ -16,80 +62,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("image"), async (req, res) => {
-    try {
-        const { title, body, user_id } = req.body;
-        const imageUrl = req.file ? `${req.file.filename}` : null;
+// create new post with image upload
+router.post("/", upload.single("image"), createPost);
 
-        const newPost = new postModel({
-            title,
-            body,
-            user_id,
-            image: imageUrl
-        });
+// get all Items
+router.get("/", getAllPost);
 
-        await newPost.save();
-        res.status(201).json({ message: "Post created successfully!", post: newPost });
-    } catch (err) {
-        console.error("Error creating post:", err);
-        res.status(500).json({ error: "Failed to create post." });
-    }
-});
-
-router.get("/", async (req, res) => {
-    try {
-        const posts = await postModel.find({})
-            .populate("user_id", "name")
-            .exec();
-        console.log(posts)
-        res.json(posts);
-    } catch (err) {
-        console.error("Error fetching posts:", err);
-        res.status(500).json({ error: "An error occurred while fetching posts." });
-    }
-
-})
+// search api 
+router.get("/search", searchPost);
 
 // delete
-router.delete("/:itemId", async (req, res) => {
-    try {
-        const { itemId } = req.params;
+router.delete("/:itemId", deletePost);
 
+// get post by id
+router.get("/:id", getPostById);
 
-        const result = await postModel.findByIdAndDelete(itemId);
-
-        if (!result) {
-            return res.status(404).json({ message: "item not found" });
-        }
-
-        res.json({ message: "Item deleted" });
-    } catch (err) {
-        console.error("Error deleting:", err);
-        res.status(500).json({ message: "Error occurred" });
-    }
-});
-
-
-router.get("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const post = await postModel.findById(id).populate("user_id")
-
-        if (!post) {
-            return res.status(404).json({ message: "Post not found" });
-        }
-
-        console.log(post)
-
-        res.json(post);
-    } catch (err) {
-        console.error("Error fetching post:", err);
-        res.status(500).json({ error: "An error occurred while fetching the post." });
-    }
-});
-
-
-
-
-module.exports = router
+module.exports = router;

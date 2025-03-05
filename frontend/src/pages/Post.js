@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import axios from "axios"
-import { useAuth } from "../context/AuthContext";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 function Post() {
-    const { userId } = useAuth();
+    // const { userId } = useAuth();
+    const userId = useSelector((state) => state.auth.userId);
     const [title, setTitle] = useState("");
     const [image, setImage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -101,7 +101,7 @@ function Post() {
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => setImage(e.target.files[0])}
-                                required
+
                             />
                         </Form.Group>
 

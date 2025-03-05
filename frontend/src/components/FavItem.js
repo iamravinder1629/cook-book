@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
 import ItemCard from './ItemCard';
+import { useSelector } from "react-redux";
 
 function FavItem() {
     const [favItems, setFavItems] = useState([]);
-    const { userId } = useAuth();
+    const userId = useSelector((state) => state.auth.userId);
+
 
     useEffect(() => {
         if (!userId) return;
@@ -25,7 +26,6 @@ function FavItem() {
                 );
 
                 const responses = await Promise.all(itemRequests);
-                console.log(responses)
                 setFavItems(responses.map((res) => res.data));
             } catch (error) {
                 console.error("Error fetching favorite items:", error);
@@ -33,6 +33,8 @@ function FavItem() {
         };
 
         fetchFavorites();
+
+
     }, [userId]);
 
 
@@ -42,7 +44,6 @@ function FavItem() {
                 favItems.map((post) => (
                     <div key={post._id} className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
                         <ItemCard post={post} />
-                        {/* {console.log(post)} */}
                     </div>
                 ))
             ) : (
