@@ -16,19 +16,19 @@ function Signup() {
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.
-            post("http://localhost:8080/api/register", { "name": name, "email": email, 'password': password })
-            .then((user) => {
-                console.log(user.data.user_id)
-                // setUserId(user.data.user_id);
-                dispatch(login(user.data.user_id));
-
+            post("http://localhost:8080/api/register", { name, email, password }, { withCredentials: true })
+            .then((response) => {
+                if (response.status === 201) {
+                    setName("")
+                    setEmail("")
+                    setPassword("")
+                    navigate("/")
+                }
+                // dispatch(login(response.data.user_id));
             }
             )
             .catch(() => { console.log("not create something wrong") })
-        setName("")
-        setEmail("")
-        setPassword("")
-        navigate("/")
+
 
     };
 

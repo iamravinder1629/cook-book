@@ -9,9 +9,10 @@ function MyPost() {
     const [mypost, setMypost] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/posts")
+        axios.get("http://localhost:8080/api/posts/mypost", { withCredentials: true })
             .then((response) => {
                 setMypost(response.data);
+                console.log(response.data);
             })
             .catch((error) => {
                 console.error("Error fetching posts:", error);
@@ -19,27 +20,18 @@ function MyPost() {
     }, [])
 
     return (
-        (userId ?
+        (
             <div className='row'>
-                {mypost.map((post, index) => {
-                    if (post.user_id._id === userId) {
-                        return <div
-                            key={index}
-                            className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
-                            <MyItemCard post={post} />
-
-                        </div>
-
-                    } else {
-                        <h1>NOT POSTED YET</h1>
-                    }
-                })
+                <h1 className='text-center'>My Posts</h1>
+                {mypost.length > 0 ? mypost.map((post, index) => {
+                    return <div
+                        key={index}
+                        className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
+                        <MyItemCard post={post} />
+                    </div>
+                }) : <p className='text-center my-5'>no post yet</p>
                 }
-
-
             </div>
-            :
-            <h1>Please Login in</h1>
         )
 
     )

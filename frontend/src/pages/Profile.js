@@ -1,16 +1,27 @@
-import React from 'react'
-import { NavLink } from "react-router-dom";
+import React from 'react';
+import axios from 'axios'
+import { Outlet } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import { FaSignInAlt } from "react-icons/fa";
-import { Outlet } from "react-router-dom";
-import { MdFavorite } from "react-icons/md";
-import { MdFavoriteBorder } from "react-icons/md";
-import { useSelector } from "react-redux";
-
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 
 function Profile() {
-    const userId = useSelector((state) => state.auth.userId);
+    const navigate = useNavigate();
 
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/logout", {
+                withCredentials: true
+            });
+
+            alert(response.data.message);
+            navigate("/profile/login");
+        } catch (error) {
+            console.error("Error logging out:", error);
+            alert("Logout failed: " + (error.response?.data?.message || "An error occurred."));
+        }
+    };
 
     return (
         <>
@@ -33,21 +44,32 @@ function Profile() {
                             My posts
                         </button>
                     </NavLink>
+
                     <NavLink
                         to="/profile/fav"
                         className={({ isActive }) => (isActive ? 'nav-link text-warning' : 'nav-link')}
                     >
                         <button className="btn btn-dark">
                             <MdFavorite />
-                                                    <MdFavoriteBorder />
+                            <MdFavoriteBorder />
                         </button>
                     </NavLink>
 
+
+
+                    <NavLink
+                        to="/profile/login"
+                        className={({ isActive }) => (isActive ? 'nav-link text-warning' : 'nav-link')}
+                    >
+                        <button className="btn btn-dark ms-3" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </NavLink>
                 </Nav>
                 <Outlet />
             </div>
         </>
-    )
+    );
 }
 
-export default Profile
+export default Profile;

@@ -1,12 +1,13 @@
 const userModel = require("../models/userModel")
 
-const favoriteToggle = 
+const favoriteToggle =
     async (req, res) => {
 
         try {
 
-            const { id, item_id } = req.params;
+            const { item_id } = req.params;
 
+            const id = req.user.id
 
             const user = await userModel.findById(id);
             if (!user) {
@@ -35,9 +36,7 @@ const favoriteToggle =
 const getUserFavorite = async (req, res) => {
 
     try {
-        const { user_id } = req.params;
-
-        const user = await userModel.findById(user_id)
+        const user = await userModel.findById(req.user.id)
             .exec();
         console.log('user: ', user);
         if (!user) {

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { Container, Nav, Navbar, Form } from 'react-bootstrap';
+import { Container, Nav, Navbar, Form } from "react-bootstrap";
 import { GoPersonFill } from "react-icons/go";
-import { setSearchQuery, fetchSearchResults, fetchAllPosts } from "../redux/slices/authSlice";
+import { fetchSearchResults, fetchAllPosts } from "../redux/slices/authSlice"; 
 
 function NavBar() {
     const dispatch = useDispatch();
@@ -11,16 +11,16 @@ function NavBar() {
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            dispatch(setSearchQuery(query));
-
             if (query.trim()) {
-                dispatch(fetchSearchResults(query)); // Fetch search results
+                console.log("navbar search posts");
+                dispatch(fetchSearchResults(query));
             } else {
-                dispatch(fetchAllPosts()); // Fetch all posts if search is empty
+                console.log("defalut navbar post");
+                dispatch(fetchAllPosts());
             }
         }, 500);
 
-        return () => clearTimeout(delayDebounce);
+        return () => clearTimeout(delayDebounce); 
     }, [query, dispatch]);
 
     return (

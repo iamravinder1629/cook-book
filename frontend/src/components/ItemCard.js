@@ -6,12 +6,11 @@ import DOMPurify from "dompurify";
 import { MdFavorite } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
 import axios from 'axios'
-// import { useAuth } from "../context/AuthContext";
 import { useSelector } from "react-redux";
 
 
 function ItemCard({ post }) {
-    const userId = useSelector((state) => state.auth.userId);
+    
 
     const [show, setShow] = useState(false);
     const [icon, setIcon] = useState("");
@@ -21,7 +20,7 @@ function ItemCard({ post }) {
 
     const handleFavorite = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/user/fav/${userId}/${post._id}`);
+            const response = await axios.get(`http://localhost:8080/api/user/fav/${post._id}`, {withCredentials: true});
             console.log(response.data);
             handleClose();
             setIcon(response.data.message)

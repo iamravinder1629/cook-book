@@ -6,17 +6,17 @@ import DOMPurify from "dompurify";
 import { MdFavorite } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
 import axios from 'axios'
-import { useSelector } from "react-redux";
-// import { useAuth } from "../context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllPosts } from "../redux/slices/authSlice";
 
 
 function MyItemCard({ post }) {
-    // const { userId } = useAuth();
     const userId = useSelector((state) => state.auth.userId);
     const [show, setShow] = useState(false);
     const [icon, setIcon] = useState("");
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const dispatch = useDispatch();
 
     const handleFavorite = async () => {
         try {
@@ -31,9 +31,11 @@ function MyItemCard({ post }) {
     }
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:8080/api/posts/${post._id}`);
+            console.log(post._id)
+            const response = await axios.delete(`http://localhost:8080/api/posts/${post._id}`, { withCredentials: true });
             console.log("Deleted:", response.data);
             alert("Post deleted successfully!");
+            dispatch(fetchAllPosts());
         } catch (error) {
             console.error("Error deleting post:", error.response?.data || error.message);
         }
@@ -41,6 +43,7 @@ function MyItemCard({ post }) {
 
 
     return (
+
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -88,6 +91,8 @@ function MyItemCard({ post }) {
                     </Button>
                 </Card.Body>
             </Card>
+
+
         </>
     )
 }

@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ItemCard from './ItemCard';
-import { useSelector } from "react-redux";
 
 function FavItem() {
     const [favItems, setFavItems] = useState([]);
-    const userId = useSelector((state) => state.auth.userId);
 
 
     useEffect(() => {
-        if (!userId) return;
 
         const fetchFavorites = async () => {
             try {
 
-                const { data } = await axios.get(`http://localhost:8080/api/user/fav/${userId}`);
-
+                const { data } = await axios.get(`http://localhost:8080/api/user/fav`, { withCredentials: true });
                 if (!data.fav || data.fav.length === 0) {
                     setFavItems([]);
                     return;
                 }
 
                 const itemRequests = data.fav.map((itemId) =>
-                    axios.get(`http://localhost:8080/api/posts/${itemId}`)
+                    axios.get(`http://localhost:8080/api/posts/${itemId}`, { withCredentials: true })
                 );
 
                 const responses = await Promise.all(itemRequests);
@@ -35,11 +31,12 @@ function FavItem() {
         fetchFavorites();
 
 
-    }, [userId]);
+    }, []);
 
 
     return (
         <div className="row">
+            <h1 className='text-center'>Favorite</h1>
             {favItems.length > 0 ? (
                 favItems.map((post) => (
                     <div key={post._id} className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">

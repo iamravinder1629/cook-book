@@ -5,14 +5,13 @@ const createPost = async (req, res) => {
     try {
         const { title, body, user_id } = req.body;
         const imageUrl = req.file ? req.file.filename : null;
-
         const newPost = new postModel({
             title,
             body,
-            user_id,
+            user_id: req.user.id,
             image: imageUrl
         });
-
+        console.log("req user", req.user)
         await newPost.save();
         res.status(201).json({ message: "Post created successfully!", post: newPost });
     } catch (err) {
@@ -25,6 +24,18 @@ const createPost = async (req, res) => {
 const getAllPost = async (req, res) => {
     try {
         const posts = await postModel.find({})
+            .populate("user_id", "name")
+            .exec();
+        res.json(posts);
+    } catch (err) {
+        console.error("Error fetching posts:", err);
+        res.status(500).json({ error: "An error occurred while fetching posts." });
+    }
+};
+const getMyPost = async (req, res) => {
+    console.log(req.user.id)
+    try {
+        const posts = await postModel.find({user_id: req.user.id})
             .populate("user_id", "name")
             .exec();
         res.json(posts);
@@ -84,4 +95,4 @@ const getPostById = async (req, res) => {
     }
 };
 
-module.exports = { createPost, getAllPost, searchPost, deletePost, getPostById };
+module.exports = { createPost, getAllPost, getMyPost, searchPost, deletePost, getPostById };

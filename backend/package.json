@@ -9,6 +9,7 @@
   "author": "Ravinder Singh",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mongoose": "^8.11.0",

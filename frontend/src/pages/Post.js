@@ -4,9 +4,12 @@ import axios from "axios"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch} from "react-redux";
+import { fetchAllPosts } from "../redux/slices/authSlice";
+
 function Post() {
     // const { userId } = useAuth();
+    const dispatch = useDispatch();
     const userId = useSelector((state) => state.auth.userId);
     const [title, setTitle] = useState("");
     const [image, setImage] = useState("");
@@ -18,26 +21,21 @@ function Post() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!userId) {
-            alert("User not logged in! Please login first.");
-            navigate("/profile/login")
-            return;
-        }
-
         const postData = {
             title,
             body: value,
             image,
             user_id: userId,
         };
-        console.log(postData)
         try {
             setLoading(true);
             const response = await axios.post("http://localhost:8080/api/posts", postData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
+                withCredentials: true,
             });
+
             setMessage(true)
 
             setTimeout(() => {
@@ -48,6 +46,7 @@ function Post() {
             setTitle("");
             setValue("");
             setImage(null);
+            dispatch(fetchAllPosts());
         } catch (error) {
             console.error("Error creating post:", error);
             alert("Failed to create post!");

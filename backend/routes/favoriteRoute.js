@@ -6,11 +6,11 @@ const router = express.Router();
 
 
 // toggle add to fav and remove
-router.get("/:id/:item_id", favoriteToggle);
+router.get("/:item_id", favoriteToggle);
 
 
 // get perticullary user favorite list
-router.get("/:user_id", getUserFavorite);
+router.get("/", getUserFavorite);
 
 
 
